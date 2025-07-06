@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: 
+      context: ./backend
+    container_name: annotation-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/uploads:/code/app/uploads
+      - ./backend/db.sqlite3:/code/app/db.sqlite3
+    restart: unless-stopped
+
+  frontend:
+    image: jupyter/base-notebook
+    container_name: annotation-frontend
+    ports:
+      - "8777:8888"
+    volumes:
+      - ./frontend:/home/jovyan/work
+      - ./backend/uploads:/home/jovyan/work/uploads
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    restart: unless-stopped

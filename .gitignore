@@ -1,0 +1,6 @@
+backend/app/__init__.py
+backend/db.sqlite3
+backend/uploads
+
+frontend/.ipynb_checkpoints
+frontend/uploads

@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+python-multipart
+rdflib
+lxml
+ipywidgets
+requests
+openai-whisper
