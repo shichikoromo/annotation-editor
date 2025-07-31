@@ -1,5 +1,5 @@
 #app/main.py
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.models import AudioFile, Transcript, RDFAnnotation, AIFAnnotation, Session
@@ -8,6 +8,7 @@ from app.rdf_handler import RDFBuilder
 from app.aif_handler import AIFBuilder
 from app.schemas import RDFAnnotationInput, AIFAnnotationInput
 import os
+import datetime
 
 app = FastAPI()
 
@@ -36,16 +37,20 @@ def list_audiofiles():
 
 @app.post("/transcribe/{file_id}")
 def transcribe(file_id: int):
+    print(datetime.datetime.now(), "transcribe()")
     session = Session()
     audio = session.query(AudioFile).filter(AudioFile.audio_id == file_id).first()
-    
+    print(datetime.datetime.now(), "main.py: audio: ", audio)
     if not audio:
         raise HTTPException(status_code=404, detail="File not found")
 
+    print(datetime.datetime.now(), "main.py: transcribe_audio()")
     response = transcribe_audio(audio.audio_file)
 
+    print(datetime.datetime.now(), "main.py: response: ", response)
     transcript = Transcript(audio_id=audio.audio_id, file_name=audio.file_name, text=response)
-
+    print(datetime.datetime.now(), "main.py: transcript: ",transcript)
+    
     session.add(transcript)
     session.commit()
     session.refresh(transcript)
@@ -150,13 +155,16 @@ def annotate_aif(file_id: int, payload: AIFAnnotationInput):
 
     if aif_ann:
         # Update
+        print("Updating existing AIFAnnotation")
         aif_ann.type = payload.type
         aif_ann.supports = payload.supports
     else:
         # Create
+        print("Creating new AIFAnnotation")
         aif_ann = AIFAnnotation(
             aif_id=f"{file_id}_{payload.sentence_id}",
             transcript_id=file_id,
+            rdf_id=rdf_ann.rdf_id,
             sentence_id =payload.sentence_id,
             type=payload.type,
             supports=payload.supports
@@ -189,19 +197,11 @@ def export_aif(transcript_id: int):
         raise HTTPException(status_code=404, detail="AIF-Annotationen not found")
 
     # ファイル名から namespace を生成
-    namespace = os.path.splitext(os.path.basename(transcript.file_name))[0].lower() + "/"
+    namespace = os.path.splitext(os.path.basename(transcript.file_name))[0].lower()
 
     builder = AIFBuilder(namespace)
 
-    annotations_data = []
-    for ann in aif_annotations:
-        annotations_data.append({
-            "rdf_id": ann.rdf_id,             
-            "role": ann.role,                  
-            "supports": ann.supports or None   
-        })
-
-    builder.build_aif(annotations_data)
+    builder.build_aif(aif_annotations)
 
     aif_xml = builder.serialize()
 

@@ -28,6 +28,8 @@ class Transcript(Base):
     audio_file = relationship("AudioFile", back_populates="transcript")
     rdf_annotation = relationship("RDFAnnotation", back_populates="transcript")
     rdf_document = relationship("RDFDocument", back_populates="transcript")
+    aif_annotation = relationship("AIFAnnotation", back_populates="transcript")
+    aif_document = relationship("AIFDocument", back_populates="transcript")
 
 class RDFAnnotation(Base):
     __tablename__ = "rdf_annotations"
@@ -59,7 +61,7 @@ class AIFAnnotation(Base):
 
     aif_id = Column(String(64000), primary_key=True, index=True)
     transcript_id = Column(Integer, ForeignKey("transcripts.transcript_id"))
-    rdf_id = Column(Integer, ForeignKey("rdf_annotations.rdf_id"))
+    rdf_id = Column(String(64000), ForeignKey("rdf_annotations.rdf_id"))
     sentence_id = Column(Integer)
     type = Column(Text)
     supports = Column(Text) 

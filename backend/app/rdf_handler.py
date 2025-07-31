@@ -25,7 +25,7 @@ class RDFBuilder:
     def build_rdf(self, annotations: list[dict]):
         for ann in annotations:
             self.build_statement(
-                statement_id=ann.rdf_id,
+                statement_id=ann.sentence_id,
                 subject=ann.subject,
                 predicate=ann.predicate,
                 object_=ann.object_,
@@ -33,4 +33,4 @@ class RDFBuilder:
             )
 
     def serialize(self) -> str:
-        return self.graph.serialize(format="application/rdf+xml", encoding="utf-8").decode("utf-8")#"application/rdf+xml", encoding="utf-8").decode("utf-8")
+        return self.graph.serialize(format="application/rdf+xml", encoding="utf-8").decode("utf-8")

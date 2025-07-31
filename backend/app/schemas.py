@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional
+
 
 class RDFAnnotationInput(BaseModel):
     sentence_id: int
@@ -10,5 +12,5 @@ class RDFAnnotationInput(BaseModel):
 class AIFAnnotationInput(BaseModel):
     sentence_id: int
     type: str
-    supports: str
+    supports: Optional[int]
 
