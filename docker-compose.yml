@@ -10,13 +10,11 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: jupyter/base-notebook
+    build:
+      context: ./frontend
     container_name: annotation-frontend
     ports:
       - "8777:8888"
     volumes:
-      - ./frontend:/home/jovyan/work
-    command: 
-      - "start-notebook.py"
-      - "--IdentityProvider.token=''"
+      - ./frontend:/home/jovyan
     restart: unless-stopped

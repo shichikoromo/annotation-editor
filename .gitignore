@@ -3,5 +3,10 @@ backend/app/__pycache__
 backend/app/db.sqlite3
 
 frontend/.ipynb_checkpoints
-frontend/uploads
-frontend/out
+frontend/uploads/*
+frontend/out/*
+frontend/.cache/
+frontend/.ipython/
+frontend/.local/
+frontend/.npm
+frontend/.jupyter

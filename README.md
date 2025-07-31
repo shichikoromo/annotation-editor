@@ -34,14 +34,16 @@ annotationeditor/
 │   │   ├── models.py
 │   │   ├── schemas.py
 │   │   ├── transcription.py
-│   │   ├── rdf\_handler.py
-│   │   ├── aif\_handler.py
-│   │   ├── db.sqlite3
+│   │   ├── rdf_handler.py
+│   │   ├── aif_handler.py
+│   │   └── db.sqlite3
+│   ├── requirements.txt
 │   └── Dockerfile
 ├── frontend/
 │   ├── editor.ipynb
 │   ├── uploads/
 │   ├── out/
+│   ├── requirements.txt
 │   └── Dockerfile
 └── docker-compose.yml
 ```
