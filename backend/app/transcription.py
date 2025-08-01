@@ -3,9 +3,7 @@ import whisper
 import tempfile
 import datetime
 
-print(datetime.datetime.now(), "transcription.py: load_model(\"base\")")
 model = whisper.load_model("small")
-print(datetime.datetime.now(), "transcription.py: load_model(\"base\")")
 
 def transcribe_audio(audio_bytes: bytes) -> str:
     print(datetime.datetime.now(), "transcription.py: transcribe_audio()")

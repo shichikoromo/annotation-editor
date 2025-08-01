@@ -1,5 +1,5 @@
 #app/main.py
-from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.models import AudioFile, Transcript, RDFAnnotation, AIFAnnotation, Session
@@ -12,6 +12,7 @@ import datetime
 
 app = FastAPI()
 
+### Hochladen einer Audiodatei ###
 @app.post("/upload_audio/")
 async def upload_audio(file: UploadFile = File(...)):
     if not file.filename.endswith(".mp3"):
@@ -23,33 +24,29 @@ async def upload_audio(file: UploadFile = File(...)):
 
     session.add(audio)
     session.commit()
-    print(f"Gespeichert mit ID: {audio.audio_id}")
     session.refresh(audio)
     session.close()
 
     return {"id": audio.audio_id, "filename": audio.file_name}
 
+### Liste aller hochgeladenen Audiodateien erstellen ###
 @app.get("/audiofiles")
 def list_audiofiles():
     session = Session()
     results = session.query(AudioFile).all()
     return [{"id": t.audio_id, "file": t.file_name} for t in results]
 
+### Transkription einer Audiodatei durchführen ###
 @app.post("/transcribe/{file_id}")
 def transcribe(file_id: int):
-    print(datetime.datetime.now(), "transcribe()")
     session = Session()
     audio = session.query(AudioFile).filter(AudioFile.audio_id == file_id).first()
-    print(datetime.datetime.now(), "main.py: audio: ", audio)
     if not audio:
         raise HTTPException(status_code=404, detail="File not found")
 
-    print(datetime.datetime.now(), "main.py: transcribe_audio()")
     response = transcribe_audio(audio.audio_file)
 
-    print(datetime.datetime.now(), "main.py: response: ", response)
     transcript = Transcript(audio_id=audio.audio_id, file_name=audio.file_name, text=response)
-    print(datetime.datetime.now(), "main.py: transcript: ",transcript)
     
     session.add(transcript)
     session.commit()
@@ -58,12 +55,14 @@ def transcribe(file_id: int):
 
     return JSONResponse(content={"response": response})
 
+### Liste aller Transkripte erstellen ###
 @app.get("/transcripts")
 def list_transcripts():
     session = Session()
     results = session.query(Transcript).all()
     return [{"id": t.transcript_id, "file": t.file_name, "text": t.text} for t in results]
 
+### RDF-Annotation speichern / aktualisieren ###
 @app.post("/annotate_rdf/{file_id}")
 def annotate_rdf(file_id: int, payload: RDFAnnotationInput):
     session = Session()
@@ -93,7 +92,6 @@ def annotate_rdf(file_id: int, payload: RDFAnnotationInput):
         )
         session.add(rdf_ann)
     
-    #session.add(rdf_ann)
     session.commit()
     session.refresh(rdf_ann)
     session.close()
@@ -102,6 +100,7 @@ def annotate_rdf(file_id: int, payload: RDFAnnotationInput):
 
     return JSONResponse(content=jsonable_encoder(rdf_ann))
 
+### RDF-Annotationen für ein bestimmtes Transkript abrufen ###
 @app.get("/rdf_annotation/{transcript_id}")
 def get_rdf_annotations(transcript_id: int):
     session = Session()
@@ -109,7 +108,7 @@ def get_rdf_annotations(transcript_id: int):
     session.close()
     return [ann.__dict__ for ann in annotations]
 
-
+### RDF-Annotationen als XML exportieren ###
 @app.get("/export_rdf/{transcript_id}")
 def export_rdf(transcript_id: int):
     session = Session()
@@ -122,13 +121,11 @@ def export_rdf(transcript_id: int):
     annotations = session.query(RDFAnnotation).filter(RDFAnnotation.transcript_id == transcript_id).order_by(RDFAnnotation.sentence_id).all()
 
     if not annotations:
-        raise HTTPException(status_code=404, detail="RDF-Annotationen not found")
+        raise HTTPException(status_code=404, detail="RDF-Annotation not found")
      
-    # ファイル名から namespace を生成
     namespace = os.path.splitext(os.path.basename(transcript.file_name))[0].lower()
 
     builder = RDFBuilder(namespace)
-
     annot =  sorted(annotations, key=lambda d: d.sentence_id, reverse=True)
     builder.build_rdf(annot)
 
@@ -137,6 +134,7 @@ def export_rdf(transcript_id: int):
     return JSONResponse(content={"rdf_xml": rdf_xml})
 
 
+### AIF-Annotation speichern / aktualisieren ###
 @app.post("/annotate_aif/{file_id}")
 def annotate_aif(file_id: int, payload: AIFAnnotationInput):
     session = Session()
@@ -149,18 +147,16 @@ def annotate_aif(file_id: int, payload: AIFAnnotationInput):
     rdf_ann = session.query(RDFAnnotation).filter_by(transcript_id=file_id,sentence_id=payload.sentence_id).first()
     if not rdf_ann:
         session.close()
-        raise HTTPException(status_code=404, detail="RDF Annotation not found")
+        raise HTTPException(status_code=404, detail="RDF-Annotation not found")
 
     aif_ann = session.query(AIFAnnotation).filter_by(aif_id=f"{file_id}_{payload.sentence_id}").first()
 
     if aif_ann:
         # Update
-        print("Updating existing AIFAnnotation")
         aif_ann.type = payload.type
         aif_ann.supports = payload.supports
     else:
         # Create
-        print("Creating new AIFAnnotation")
         aif_ann = AIFAnnotation(
             aif_id=f"{file_id}_{payload.sentence_id}",
             transcript_id=file_id,
@@ -175,10 +171,17 @@ def annotate_aif(file_id: int, payload: AIFAnnotationInput):
     session.refresh(aif_ann)
     session.close()
 
-    print(jsonable_encoder(aif_ann))
-
     return JSONResponse(content=jsonable_encoder(aif_ann))
 
+### AIF-Annotationen für ein bestimmtes Transkript abrufen ###
+@app.get("/aif_annotation/{transcript_id}")
+def get_aif_annotations(transcript_id: int):
+    session = Session()
+    annotations = session.query(AIFAnnotation).filter_by(transcript_id=transcript_id).all()
+    session.close()
+    return [ann.__dict__ for ann in annotations]
+
+### AIF-Annotationen als XML exportieren ###
 @app.get("/export_aif/{transcript_id}")
 def export_aif(transcript_id: int):
     session = Session()
@@ -196,14 +199,12 @@ def export_aif(transcript_id: int):
         session.close()
         raise HTTPException(status_code=404, detail="AIF-Annotationen not found")
 
-    # ファイル名から namespace を生成
     namespace = os.path.splitext(os.path.basename(transcript.file_name))[0].lower()
 
     builder = AIFBuilder(namespace)
-
     builder.build_aif(aif_annotations)
-
     aif_xml = builder.serialize()
 
     session.close()
+
     return JSONResponse(content={"aif_xml": aif_xml})

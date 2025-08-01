@@ -85,6 +85,5 @@ db_path = os.path.join(BASE_DIR, "db.sqlite3")
 
 # DB 接続と初期化
 engine = create_engine(f"sqlite:///{db_path}", connect_args={"check_same_thread": False})
-#engine = create_engine("sqlite:////backend/db.sqlite3", connect_args={"check_same_thread": False})
 Base.metadata.create_all(engine)
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)

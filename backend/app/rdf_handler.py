@@ -6,7 +6,6 @@ class RDFBuilder:
         self.ns_str = file_namespace if file_namespace.endswith("/") else file_namespace + "/"
         self.namespace = Namespace(self.ns_str)
         self.graph = Graph()
-        #self.graph.bind(self.ns_str, self.namespace)
         self.graph.bind(file_namespace, self.namespace)
 
 
