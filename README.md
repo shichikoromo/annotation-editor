@@ -22,9 +22,9 @@ Die Anwendung ist als Microservice-System mit folgenden Komponenten aufgebaut:
 * Python 3.10
 * ipywidgets
 * FastAPI
-* SQLite + SQLAlchemy
 * Whisper
 * rdflib
+* PostgreSQL + SQLAlchemy
 * Docker
 
 
