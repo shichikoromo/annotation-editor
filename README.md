@@ -13,10 +13,9 @@ Die Anwendung ist als Microservice-System mit folgenden Komponenten aufgebaut:
   - **Transkription**
   - **RDF-Annotation-Service**
   - **AIF-Annotation-Service**
-- **Frontend (Jupyter Notebook + ipywidgets)**: Interaktive Benutzeroberfläche
-- **Datenbank (SQLite)**: Speicherung der Transkripte und Annotationen
-- **Docker**: Containerisierung aller Komponenten
-
+- **Frontend (Jupyter Notebook)**: Interaktive Benutzeroberfläche
+- **Datenbank (PostgeSQL)**: Speicherung der Transkripte und Annotationen
+- **Docker**: Containerisierung der Komponenten
 
 ## Technologien
 
