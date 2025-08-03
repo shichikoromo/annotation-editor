@@ -8,7 +8,7 @@ Dieses Projekt wurde im Rahmen der Veranstaltung "63490 Projektpraktikum Data Sc
 
 Die Anwendung ist als Microservice-System mit folgenden Komponenten aufgebaut:
 
-- **Backend (FastAPI)**: API für Transkription, RDF- und AIF-Annotation
+- **API Gateway**: API für Transkription, RDF- und AIF-Annotation
 - **Frontend (Jupyter Notebook + ipywidgets)**: Interaktive Benutzeroberfläche
 - **Datenbank (SQLite)**: Speicherung der Transkripte und Annotationen
 - **Docker**: Containerisierung aller Komponenten
@@ -71,7 +71,6 @@ annotationeditor/
 │       └── Dockerfile
 │
 ├── db/
-│   └── init.sql（必要なら）
 
 ```
 
@@ -91,8 +90,8 @@ docker-compose up --build
 
 ### 3. Zugriff auf Jupyter Notebook
 
-* Öffnen Sie [http://localhost:8777](http://localhost:8777) im Browser.
-* Notebook: `frontend/editor_notebook.ipynb`
+* Öffnen Sie [http://localhost:7777](http://localhost:7777) im Browser.
+* Notebook: `editor.ipynb`
 
 ### Funktionen im Notebook
 
