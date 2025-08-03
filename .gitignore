@@ -1,15 +1,19 @@
-backend/app/__init__.py
-backend/app/__pycache__
-backend/app/db.sqlite3
 
-frontend/.ipynb_checkpoints
 frontend/uploads/*
 frontend/out/*
 !frontend/uploads/.gitkeep
 !frontend/out/.gitkeep
 
+frontend/.ipynb_checkpoints
 frontend/.cache/
 frontend/.ipython/
 frontend/.local/
 frontend/.npm
 frontend/.jupyter
+
+api-gateway/__pycache__
+services/transcription-service/__pycache__
+services/rdf-annotation-service/__pycache__
+services/aif-annotation-service/__pycache__
+
+.env

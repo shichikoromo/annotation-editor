@@ -28,24 +28,51 @@ Die Anwendung ist als Microservice-System mit folgenden Komponenten aufgebaut:
 ## Ordnerstruktur
 ```
 annotationeditor/
-├── backend/
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── models.py
-│   │   ├── schemas.py
-│   │   ├── transcription.py
-│   │   ├── rdf_handler.py
-│   │   ├── aif_handler.py
-│   │   └── db.sqlite3
+├── docker-compose.yml
+│
+├── api-gateway/               
+│   ├── main.py
 │   ├── requirements.txt
 │   └── Dockerfile
-├── frontend/
+│
+├── frontend/                 
 │   ├── editor.ipynb
 │   ├── uploads/
 │   ├── out/
 │   ├── requirements.txt
 │   └── Dockerfile
-└── docker-compose.yml
+│
+├── services/
+│   ├── transcription-service/
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── trenscription.py
+│   │   ├── db.py
+│   │   ├── requirements.txt
+│   │   └── Dockerfile
+│   │
+│   ├── rdf-annotation-service/
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── rdf_handler.py
+│   │   ├── db.py
+│   │   ├── requirements.txt
+│   │   └── Dockerfile
+│   │
+│   └── aif-annotation-service/
+│       ├── main.py
+│       ├── models.py
+│       ├── schemas.py
+│       ├── aif_handler.py
+│       ├── db.py
+│       ├── requirements.txt
+│       └── Dockerfile
+│
+├── db/
+│   └── init.sql（必要なら）
+
 ```
 
 ## Anwendung

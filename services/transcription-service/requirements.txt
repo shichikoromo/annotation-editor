@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+python-multipart
+python-dotenv
+ipywidgets
+requests
+openai-whisper
+psycopg2-binary
+python-dotenv

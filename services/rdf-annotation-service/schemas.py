@@ -7,9 +7,3 @@ class RDFAnnotationInput(BaseModel):
     predicate: str
     object_: str
     sentence: str
-
-class AIFAnnotationInput(BaseModel):
-    sentence_id: int
-    type: str
-    supports: Optional[int]
-

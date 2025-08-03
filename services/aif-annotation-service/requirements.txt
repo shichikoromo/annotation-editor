@@ -2,9 +2,10 @@ fastapi
 uvicorn
 sqlalchemy
 python-multipart
+python-dotenv
 rdflib
 lxml
 ipywidgets
 requests
-openai-whisper
 pydantic
+psycopg2-binary

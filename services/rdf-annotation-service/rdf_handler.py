@@ -1,4 +1,4 @@
-#app/rdf_handler.py
+#rdf_handler.py
 from rdflib import Graph, Namespace, URIRef, Literal, RDF
 
 class RDFBuilder:

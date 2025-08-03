@@ -14,8 +14,7 @@ class AIFBuilder:
     def add_node(self, sentence_id: str, type: str, supports: Optional[str] = None):
         node_uri = URIRef(f"{self.ns_str}statement{sentence_id}")
         node_class = self.aif_ns[type]
-        support_class = self.aif_ns["Concusion"]
-
+        
         self.graph.add((node_uri, RDF.type, node_class))
 
         if type == "Premise" and supports:

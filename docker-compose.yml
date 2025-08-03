@@ -1,20 +1,85 @@
 services:
-  backend:
-    build: 
-      context: ./backend
-    container_name: annotation-backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./backend:/app
-    restart: unless-stopped
-
   frontend:
     build:
       context: ./frontend
     container_name: annotation-frontend
+    networks:
+      - annotationeditor
     ports:
-      - "8777:8888"
+      - "7777:8888"
     volumes:
       - ./frontend:/home/jovyan
-    restart: unless-stopped
+    depends_on:
+      - api-gateway
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    networks:
+      - annotationeditor
+    ports:
+      - "8080:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./api-gateway:/app
+    depends_on:
+      - transcription-service
+      - rdf-annotation-service
+      - aif-annotation-service
+      - db
+
+  transcription-service:
+    build: ./services/transcription-service
+    container_name: transcription-service
+    networks:
+      - annotationeditor    
+    env_file:
+      - .env
+    volumes:
+      - ./services/transcription-service:/app
+    depends_on:
+      - db
+
+  rdf-annotation-service:
+    build: ./services/rdf-annotation-service
+    container_name: rdf-annotation-service
+    networks:
+      - annotationeditor    
+    env_file:
+      - .env
+    volumes:
+      - ./services/rdf-annotation-service:/app
+    depends_on:
+      - db
+
+  aif-annotation-service:
+    build: ./services/aif-annotation-service
+    container_name: aif-annotation-service
+    networks:
+      - annotationeditor
+    env_file:
+      - .env
+    volumes:
+      - ./services/aif-annotation-service:/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    container_name: db
+    networks:
+      - annotationeditor
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+
+networks:
+  annotationeditor:

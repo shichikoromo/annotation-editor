@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+python-multipart
+python-dotenv
+rdflib
+lxml
+ipywidgets
+requests
+pydantic
+psycopg2-binary

@@ -1,6 +1,7 @@
 FROM jupyter/base-notebook:python-3.10
 
-RUN pip install --no-cache-dir spacy ipywidgets 
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install jupyterlab
 
 WORKDIR /home/jovyan
