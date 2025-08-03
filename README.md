@@ -9,6 +9,10 @@ Dieses Projekt wurde im Rahmen der Veranstaltung "63490 Projektpraktikum Data Sc
 Die Anwendung ist als Microservice-System mit folgenden Komponenten aufgebaut:
 
 - **API Gateway**: API für Transkription, RDF- und AIF-Annotation
+- **Services**
+  - **Transkription**
+  - **RDF-Annotation-Service**
+  - **AIF-Annotation-Service**
 - **Frontend (Jupyter Notebook + ipywidgets)**: Interaktive Benutzeroberfläche
 - **Datenbank (SQLite)**: Speicherung der Transkripte und Annotationen
 - **Docker**: Containerisierung aller Komponenten
