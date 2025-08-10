@@ -85,7 +85,8 @@ annotationeditor/
 git clone https://github.com/shichikoromo/annotation-editor.git
 ```
 
-### 2. .env-Datei anpassen
+### 2. `.env`-Datei anpassen
+- `.env.example` -> `.env` und ggf. Inhalte anpassen
 
 ### 3. Projekt starten
 
