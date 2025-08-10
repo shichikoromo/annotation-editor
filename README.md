@@ -85,13 +85,15 @@ annotationeditor/
 git clone https://github.com/shichikoromo/annotation-editor.git
 ```
 
-### 2. Projekt starten
+### 2. .env-Datei anpassen
+
+### 3. Projekt starten
 
 ```bash
 docker-compose up --build
 ```
 
-### 3. Zugriff auf Jupyter Notebook
+### 4. Zugriff auf Jupyter Notebook
 
 * Öffnen Sie [http://localhost:7777](http://localhost:7777) im Browser.
 * Notebook: `editor.ipynb`
