@@ -29,7 +29,7 @@ async def list_audiofiles():
         response = await client.get(f"{TRANSCRIPTION_URL}/audiofiles")
     return JSONResponse(content=response.json(), status_code=response.status_code)
 
-### Transkription anstoßen ###
+### Transkription starten ###
 @app.post("/transcribe/{file_id}")
 async def transcribe(file_id: int):
     async with httpx.AsyncClient(timeout=None) as client:

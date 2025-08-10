@@ -4,10 +4,6 @@ from models import AudioFile, Transcript
 from db import SessionLocal
 from transcription import transcribe_audio
 
-#from app.models import AudioFile, Transcript, RDFAnnotation, AIFAnnotation, Session
-#from app.rdf_handler import RDFBuilder
-#from app.aif_handler import AIFBuilder
-
 app = FastAPI()
 
 ### Hochladen einer Audiodatei ###
