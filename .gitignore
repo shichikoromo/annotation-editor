@@ -14,6 +14,6 @@ frontend/.jupyter
 api-gateway/__pycache__
 services/transcription-service/__pycache__
 services/rdf-annotation-service/__pycache__
-services/aif-annotation-service/__pycache__
+services/aif-argument-service/__pycache__
 
 .env

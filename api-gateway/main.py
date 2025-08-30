@@ -6,7 +6,7 @@ app = FastAPI()
 
 TRANSCRIPTION_URL = "http://transcription-service:8001"
 RDF_URL = "http://rdf-annotation-service:8002"
-AIF_URL = "http://aif-annotation-service:8003"
+AIF_URL = "http://aif-argument-service:8003"
 
 ### Audio-Datei hochladen ###
 @app.post("/upload_audio/")
@@ -64,18 +64,18 @@ async def export_rdf(transcript_id: int):
         response = await client.get(f"{RDF_URL}/export_rdf/{transcript_id}")
     return JSONResponse(content=response.json(), status_code=response.status_code)
 
-### AIF-Annotation absenden ###
-@app.post("/annotate_aif/{file_id}")
-async def annotate_aif(file_id: int, payload: dict):
+### AIF-Argument absenden ###
+@app.post("/add_aif/{file_id}")
+async def add_aif(file_id: int, payload: dict):
     async with httpx.AsyncClient() as client:
-        response = await client.post(f"{AIF_URL}/annotate_aif/{file_id}", json=payload)
+        response = await client.post(f"{AIF_URL}/add_aif/{file_id}", json=payload)
     return JSONResponse(content=response.json(), status_code=response.status_code)
 
-### AIF-Annotationen abrufen ###
-@app.get("/aif_annotation/{transcript_id}")
-async def get_aif_annotations(transcript_id: int):
+### AIF-Argument abrufen ###
+@app.get("/aif_argument/{transcript_id}")
+async def get_aif_arguments(transcript_id: int):
     async with httpx.AsyncClient() as client:
-        response = await client.get(f"{AIF_URL}/aif_annotation/{transcript_id}")
+        response = await client.get(f"{AIF_URL}/aif_argument/{transcript_id}")
     return JSONResponse(content=response.json(), status_code=response.status_code)
 
 ### AIF als XML exportieren ###

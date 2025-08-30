@@ -13,7 +13,7 @@ class Transcript(Base):
     transcribed_at = Column(DateTime)
 
     rdf_annotations = relationship("RDFAnnotation", back_populates="transcript")
-    aif_annotations = relationship("AIFAnnotation", back_populates="transcript")
+    aif_arguments = relationship("AIFArgument", back_populates="transcript")
     aif_document = relationship("AIFDocument", back_populates="transcript")
 
 
@@ -30,11 +30,11 @@ class RDFAnnotation(Base):
     rdf_timestamp = Column(DateTime, default=datetime.now)
 
     transcript = relationship("Transcript", back_populates="rdf_annotations")
-    aif_annotations = relationship("AIFAnnotation", back_populates="rdf_annotation")
+    aif_arguments = relationship("AIFArgument", back_populates="rdf_annotation")
 
 
-class AIFAnnotation(Base):
-    __tablename__ = "aif_annotations"
+class AIFArgument(Base):
+    __tablename__ = "aif_arguments"
 
     aif_id = Column(String(64000), primary_key=True, index=True)
     transcript_id = Column(Integer, ForeignKey("transcripts.transcript_id"))
@@ -44,8 +44,8 @@ class AIFAnnotation(Base):
     supports = Column(Text)
     aif_timestamp = Column(DateTime, default=datetime.now)
 
-    transcript = relationship("Transcript", back_populates="aif_annotations")
-    rdf_annotation = relationship("RDFAnnotation", back_populates="aif_annotations")
+    transcript = relationship("Transcript", back_populates="aif_arguments")
+    rdf_annotation = relationship("RDFAnnotation", back_populates="aif_arguments")
 
 
 class AIFDocument(Base):

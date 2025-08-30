@@ -8,11 +8,11 @@ Dieses Projekt wurde im Rahmen der Veranstaltung "63490 Projektpraktikum Data Sc
 
 Die Anwendung ist als Microservice-System mit folgenden Komponenten aufgebaut:
 
-- **API Gateway**: API für Transkription, RDF- und AIF-Annotation
+- **API Gateway**: API für Transkription, RDF-Annotation und AIF-Argument
 - **Services**
   - **Transkription**
   - **RDF-Annotation-Service**
-  - **AIF-Annotation-Service**
+  - **AIF-Argument-Service**
 - **Frontend (Jupyter Notebook)**: Interaktive Benutzeroberfläche
 - **Datenbank (PostgeSQL)**: Speicherung der Transkripte und Annotationen
 - **Docker**: Containerisierung der Komponenten
@@ -64,7 +64,7 @@ annotationeditor/
 │   │   ├── requirements.txt
 │   │   └── Dockerfile
 │   │
-│   └── aif-annotation-service/
+│   └── aif-argument-service/
 │       ├── main.py
 │       ├── models.py
 │       ├── schemas.py
@@ -104,5 +104,5 @@ docker-compose up --build
 * MP3-Datei hochladen
 * Transkription ausführen
 * Aussage-Annotation (RDF) hinzufügen
-* Argument-Annotation (AIF) strukturieren
+* Argument-Argument (AIF) strukturieren
 * RDF/AIF als XML exportieren

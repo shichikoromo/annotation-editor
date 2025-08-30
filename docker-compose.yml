@@ -26,7 +26,7 @@ services:
     depends_on:
       - transcription-service
       - rdf-annotation-service
-      - aif-annotation-service
+      - aif-argument-service
       - db
 
   transcription-service:
@@ -53,15 +53,15 @@ services:
     depends_on:
       - db
 
-  aif-annotation-service:
-    build: ./services/aif-annotation-service
-    container_name: aif-annotation-service
+  aif-argument-service:
+    build: ./services/aif-argument-service
+    container_name: aif-argument-service
     networks:
       - annotationeditor
     env_file:
       - .env
     volumes:
-      - ./services/aif-annotation-service:/app
+      - ./services/aif-argument-service:/app
     depends_on:
       - db
 

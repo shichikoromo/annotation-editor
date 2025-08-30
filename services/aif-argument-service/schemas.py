@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class AIFAnnotationInput(BaseModel):
+class AIFArgumentInput(BaseModel):
     sentence_id: int
     type: str
     supports: Optional[int]
