@@ -5,7 +5,7 @@ from models import RDFAnnotation, Transcript
 from db import SessionLocal
 from schemas import RDFAnnotationInput
 from rdf_handler import RDFBuilder
-import os
+import os, datetime
 
 app = FastAPI()
 
@@ -26,6 +26,7 @@ def annotate_rdf(file_id: int, payload: RDFAnnotationInput):
         rdf_ann.subject = payload.subject
         rdf_ann.predicate = payload.predicate
         rdf_ann.object_ = payload.object_
+        rdf_ann.rdf_timestamp = datetime.datetime.now()
     else:
         # Create
         rdf_ann = RDFAnnotation(

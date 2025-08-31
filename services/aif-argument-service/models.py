@@ -30,7 +30,19 @@ class RDFAnnotation(Base):
     rdf_timestamp = Column(DateTime, default=datetime.now)
 
     transcript = relationship("Transcript", back_populates="rdf_annotations")
-    aif_arguments = relationship("AIFArgument", back_populates="rdf_annotation")
+    #aif_arguments = relationship("AIFArgument", back_populates="rdf_annotation")
+
+    aif_arguments_as_source = relationship(
+        "AIFArgument",
+        back_populates="source_annotation",
+        foreign_keys="AIFArgument.i_source_id"
+    )
+
+    aif_arguments_as_target = relationship(
+        "AIFArgument",
+        back_populates="target_annotation",
+        foreign_keys="AIFArgument.i_target_id"
+    )
 
 
 class AIFArgument(Base):
@@ -38,14 +50,16 @@ class AIFArgument(Base):
 
     aif_id = Column(String(64000), primary_key=True, index=True)
     transcript_id = Column(Integer, ForeignKey("transcripts.transcript_id"))
-    rdf_id = Column(String(64000), ForeignKey("rdf_annotations.rdf_id"))
-    sentence_id = Column(Integer)
-    type = Column(Text)
-    supports = Column(Text)
+    i_source_id = Column(String(64000), ForeignKey("rdf_annotations.rdf_id"))
+    i_target_id = Column(String(64000), ForeignKey("rdf_annotations.rdf_id"))
+    s_relation = Column(Text)
     aif_timestamp = Column(DateTime, default=datetime.now)
 
     transcript = relationship("Transcript", back_populates="aif_arguments")
-    rdf_annotation = relationship("RDFAnnotation", back_populates="aif_arguments")
+
+    source_annotation = relationship("RDFAnnotation",foreign_keys="[AIFArgument.i_source_id]")
+    target_annotation = relationship("RDFAnnotation",foreign_keys="[AIFArgument.i_target_id]")
+
 
 
 class AIFDocument(Base):

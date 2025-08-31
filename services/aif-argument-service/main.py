@@ -5,7 +5,8 @@ from models import Transcript, AIFArgument, RDFAnnotation
 from db import SessionLocal
 from schemas import AIFArgumentInput
 from aif_handler import AIFBuilder
-import os
+from sqlalchemy.orm import aliased
+import os, datetime
 
 app = FastAPI()
 
@@ -19,26 +20,33 @@ def add_aif(file_id: int, payload: AIFArgumentInput):
         session.close()
         raise HTTPException(status_code=404, detail="Transcript not found")
 
-    rdf_ann = session.query(RDFAnnotation).filter_by(transcript_id=file_id,sentence_id=payload.sentence_id).first()
-    if not rdf_ann:
-        session.close()
-        raise HTTPException(status_code=404, detail="RDF-Annotation not found")
+    # Source/Target Annotation holen
+    source_ann = session.query(RDFAnnotation).filter_by(transcript_id=file_id, sentence_id=payload.source_id).first()
+    target_ann = session.query(RDFAnnotation).filter_by(transcript_id=file_id, sentence_id=payload.target_id).first()
 
-    aif_arg = session.query(AIFArgument).filter_by(aif_id=f"{file_id}_{payload.sentence_id}").first()
+    if not source_ann or not target_ann:
+        session.close()
+        raise HTTPException(status_code=404, detail="Source or target RDF-Annotation not found")
+
+    # aif_id eindeutig konstruieren
+    aif_id = f"{file_id}_{payload.source_id}"
+
+    aif_arg = session.query(AIFArgument).filter_by(aif_id=aif_id).first()
 
     if aif_arg:
         # Update
-        aif_arg.type = payload.type
-        aif_arg.supports = payload.supports
+        aif_arg.i_source_id = source_ann.rdf_id
+        aif_arg.i_target_id = target_ann.rdf_id
+        aif_arg.s_relation = payload.relation
+        aif_arg.aif_timestamp = datetime.datetime.now()
     else:
         # Create
         aif_arg = AIFArgument(
-            aif_id=f"{file_id}_{payload.sentence_id}",
+            aif_id=aif_id,
             transcript_id=file_id,
-            rdf_id=rdf_ann.rdf_id,
-            sentence_id =payload.sentence_id,
-            type=payload.type,
-            supports=payload.supports
+            i_source_id=source_ann.rdf_id,
+            i_target_id=target_ann.rdf_id,
+            s_relation=payload.relation,
         )
         session.add(aif_arg)
     
@@ -52,9 +60,9 @@ def add_aif(file_id: int, payload: AIFArgumentInput):
 @app.get("/aif_argument/{transcript_id}")
 def get_aif_arguments(transcript_id: int):
     session = SessionLocal()
-    annotations = session.query(AIFArgument).filter_by(transcript_id=transcript_id).all()
+    arguments = session.query(AIFArgument).filter_by(transcript_id=transcript_id).all()
     session.close()
-    return [ann.__dict__ for ann in annotations]
+    return [arg.__dict__ for arg in arguments]
 
 ### AIF-Argumente als XML exportieren ###
 @app.get("/export_aif/{transcript_id}")
@@ -66,9 +74,15 @@ def export_aif(transcript_id: int):
         session.close()
         raise HTTPException(status_code=404, detail="Transcript not found")
 
-    aif_arguments = session.query(AIFArgument).join(Transcript).filter(
-        AIFArgument.transcript_id == transcript_id
-    ).all()
+    #aif_arguments = session.query(AIFArgument).join(Transcript).filter(AIFArgument.transcript_id == transcript_id).all()
+
+    source_ann = aliased(RDFAnnotation)
+    target_ann = aliased(RDFAnnotation)
+
+    aif_arguments = session.query(AIFArgument).\
+        join(source_ann, AIFArgument.i_source_id == source_ann.rdf_id).\
+        join(target_ann, AIFArgument.i_target_id == target_ann.rdf_id).\
+        filter(AIFArgument.transcript_id == transcript_id).all()
 
     if not aif_arguments:
         session.close()

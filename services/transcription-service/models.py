@@ -18,7 +18,7 @@ class Transcript(Base):
     __tablename__ = "transcripts"
 
     transcript_id = Column(Integer, primary_key=True)
-    audio_id = Column(Integer, ForeignKey("audio_files.audio_id", ondelete="CASCADE"))
+    audio_id = Column(Integer, ForeignKey("audio_files.audio_id"))
     file_name = Column(String)
     text = Column(Text)
     transcribed_at = Column(DateTime, default=datetime.now)

@@ -11,22 +11,22 @@ class AIFBuilder:
         self.graph.bind("rdf", RDF)
         self.graph.bind("AIF", self.aif_ns)
 
-    def add_node(self, sentence_id: str, type: str, supports: Optional[str] = None):
-        node_uri = URIRef(f"{self.ns_str}statement{sentence_id}")
-        node_class = self.aif_ns[type]
-        
-        self.graph.add((node_uri, RDF.type, node_class))
+    def add_argument(self, source_id: str, target_id: str, relation: str):
 
-        if type == "Premise" and supports:
-            target_uri = URIRef(f"{self.ns_str}statement{supports}")
-            self.graph.add((node_uri, self.aif_ns.supports, target_uri))
+        source_uri = URIRef(f"{self.ns_str}{source_id.split('_')[1]}")
+        target_uri = URIRef(f"{self.ns_str}{target_id.split('_')[1]}")
 
-    def build_aif(self, annotations: list[dict]):
-        for ann in annotations:
-            self.add_node(
-                sentence_id=ann.sentence_id,
-                type=ann.type, 
-                supports=ann.supports
+        self.graph.add((source_uri, RDF.type, self.aif_ns.Premise))
+        self.graph.add((target_uri, RDF.type, self.aif_ns.Conclusion))
+
+        self.graph.add((source_uri, self.aif_ns[relation], target_uri))
+
+    def build_aif(self, arguments: list[dict]):
+        for arg in arguments:
+            self.add_argument(
+                source_id=arg.i_source_id,
+                target_id=arg.i_target_id,
+                relation=arg.s_relation
             )
 
     def serialize(self) -> str:
